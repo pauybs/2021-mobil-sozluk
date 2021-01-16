@@ -1,1 +1,1 @@
-# 2021-nobil-sozluk
+# 2021-mobil-sozluk
