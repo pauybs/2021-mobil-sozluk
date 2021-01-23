@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".VoiceToText"
+    android:layout_centerVertical="true"
+    android:background="#5b538a"
+    >
+
+    <TextView
+        android:id="@+id/tv_mesaj"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorGenel"
+        android:textSize="25dp"
+        android:textAlignment="center"
+        />
+
+
+
+
+        <ImageButton
+            android:id="@+id/imgbtn_voice"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:background="#585387"
+            android:scaleType="fitCenter"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/ic_mic"
+
+
+            />
+
+
+</RelativeLayout>
+
+
+
+
+
+
+

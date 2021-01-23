@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".Phrasal_Verbs"
+    android:layout_centerHorizontal="true"
+    android:id="@+id/drawer_layout"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start"
+    android:background="#5b538a"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:id="@+id/toolbar"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            app:popupTheme="@style/Theme.AppCompat.Light"
+            android:elevation="8dp"
+            />
+
+        <TextView
+
+            android:id="@+id/tv_soru"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#5b538a"
+            android:textColor="@color/colorGenel"
+            android:textSize="30sp"
+
+            />
+
+
+        <RadioGroup
+            android:id="@+id/rdGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtView"
+            android:orientation="vertical">
+            <RadioButton
+                android:id="@+id/rbtn_a"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:padding="10dp"
+                android:textColor="@color/colorGenel"
+                android:buttonTint="@color/colorGenel"
+                android:textSize="30sp"
+                />
+
+            <RadioButton
+                android:id="@+id/rbtn_b"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:padding="10dp"
+                android:textColor="@color/colorGenel"
+                android:buttonTint="@color/colorGenel"
+                android:textSize="30sp"
+                />
+
+            <RadioButton
+                android:id="@+id/rbtn_c"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:checked="false"
+                android:padding="10dp"
+                android:textColor="@color/colorGenel"
+                android:buttonTint="@color/colorGenel"
+                android:textSize="30sp"
+                />
+
+            <RadioButton
+                android:id="@+id/rbtn_d"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:padding="10dp"
+                android:textColor="@color/colorGenel"
+                android:buttonTint="@color/colorGenel"
+                android:textSize="30sp"
+                />
+        </RadioGroup>
+
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorGenel"
+            android:textStyle="bold"
+            android:background="@drawable/button_shape"
+            android:layout_marginLeft="103dp"
+            android:layout_marginRight="103dp"
+
+            android:gravity="top|bottom|center_vertical|center_horizontal"
+            android:text="CHECK"
+
+
+            android:textAlignment="center" />
+
+        <RelativeLayout
+            android:id="@+id/relative_dur"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp">
+
+            <ProgressBar
+
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:indeterminateDrawable="@drawable/cpb_1"
+                android:max="100"
+                android:progress="65" />
+
+            <TextView
+                android:id="@+id/tv_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@color/colorGenel"
+                android:textSize="40sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/imgbtn_listen"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="10dp"
+                android:background="#5b538a"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_baseline_volume_up_24" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Pitch"
+                android:textColor="@color/colorGenel"
+                />
+            <SeekBar
+                android:layout_marginStart="20dp"
+                android:id="@+id/sb_pitch"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:progress="75"
+                android:thumbTint="@color/colorGenel"
+                >
+            </SeekBar>
+            <TextView
+                android:gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Speed"
+                android:textColor="@color/colorGenel"
+                android:layout_marginStart="195dp"
+                />
+            <SeekBar
+                android:layout_marginStart="220dp"
+                android:id="@+id/sb_speed"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:progress="75"
+                android:thumbTint="@color/colorGenel"
+                >
+            </SeekBar>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/ibtn_home"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+
+                android:layout_centerInParent="true"
+                android:background="#5b538a"
+
+                android:scaleType="fitCenter"
+                android:tint="#4c98cf"
+                app:srcCompat="@drawable/home"
+                />
+
+
+
+
+        </RelativeLayout>
+    </LinearLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:id="@+id/nav_view"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/custom_menu" />
+</androidx.drawerlayout.widget.DrawerLayout>

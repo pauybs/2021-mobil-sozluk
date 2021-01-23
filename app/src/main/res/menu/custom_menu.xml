@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#5b538a"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+
+            android:background="@color/colorAccent"
+            android:icon="@drawable/home"
+            android:iconTint="#d4fefe"
+            android:textColor="#d4fefe"
+
+            android:title="Home">
+
+        </item>
+        <item android:id="@+id/nav_settings"
+
+            android:icon="@drawable/ic_settings"
+            android:title="Settings">
+        </item>
+        <item android:id="@+id/nav_about"
+            android:icon="@drawable/ic_about"
+            android:title="About">
+        </item>
+
+
+
+    </group>
+    <item android:title="Communicate">
+        <menu>
+            <item android:id="@+id/nav_share"
+                android:icon="@drawable/ic_baseline_share_24"
+                android:title="Share"/>
+
+        </menu>
+    </item>
+
+
+</menu>

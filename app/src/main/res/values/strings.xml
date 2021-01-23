@@ -1,0 +1,54 @@
+<resources>
+
+    <string name="mailtut"></string>
+    <string name="instructions">Click on UNLOCK button to unlock the screen</string>
+
+    <string name="unlock">UNLOCK</string>
+    <string name="button_text"><font size="20">First line!</font>\n\<font size="10">Second line!</font></string>
+    <string name="button_quiz">
+       <font size="100">First line!</font>\n\<font size="50">Second line!</font>
+    </string>
+
+    <string name="app_name">dictionary</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="time_picker_example">Time Picker Example</string>
+    <string name="time_pick">Pick the time and press save button</string>
+    <string name="time_save">Save</string>
+    <string name="time_selected"></string>
+    <string name="time_current">The Time is:</string>
+    <string name="speed">Speed</string>
+    <string name="pitch">Pitch</string>
+    <string name="Speed" />
+
+    <bool name="switch_kontrol">
+        true
+    </bool>
+
+
+    <bool name="a1kontrol">
+        true
+    </bool>
+    <bool name="a2kontrol">
+        false
+    </bool>
+    <bool name="b1kontrol">
+        false
+    </bool>
+
+
+    <string-array name="Options">
+        <item>A1</item>
+        <item>A2</item>
+        <item>B1</item>
+    </string-array>
+
+    <string name="tez">Bu Proje Pamukkale Üniversitesi Yönetim Bilişim Sistemleri Lisans Tezi Kapsamında Doğukan Çelik Tarafından Hazırlanmıştır</string>
+    <string name="tez2"> This Project Was Prepared By Doğukan Çelik Within The Scope Of Pamukkale University Management Information Systems Undergraduate Thesis</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+</resources>
+
+
+
