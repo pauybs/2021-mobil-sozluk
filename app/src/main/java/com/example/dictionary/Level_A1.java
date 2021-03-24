@@ -90,6 +90,8 @@ public class Level_A1 extends AppCompatActivity  implements  NavigationView.OnNa
     SeekBar sb_pitch;
     TextView tv_soru;
 
+    Toast toast;
+
     ProgressBar progressBar ;
     int progressbarDurum=0;
     Handler handler=new Handler();
@@ -100,12 +102,14 @@ public class Level_A1 extends AppCompatActivity  implements  NavigationView.OnNa
     String cevap;
     Button btn_next;
    ImageButton btn_home;
+    TimerTask task;
+
 
 
     int m=0;
     TextView tv_timer;
     CountDownTimer countDownTimer;
-    long timeLeftMiliSeconds=11000;
+    long timeLeftMiliSeconds;///***///
     boolean timerRuning;
     int sayac=0;
     BroadcastReceiver mReceiver;
@@ -116,55 +120,70 @@ public class Level_A1 extends AppCompatActivity  implements  NavigationView.OnNa
 
 
 
-    int startCountdown = 10;
+    int startCountdown = 10100;
     int currentCountdown;
     Handler countdownHandler = new Handler();
 
-    public void startCountdownTimer() {
+    ///Timer new version varaible
+
+
+
+
+  /*  public void startCountdownTimer() {
         currentCountdown = startCountdown;
       //  stopTimer=false;
         if(stopTimer==true){
             return;
         }
-        for (int i = 1; i <= startCountdown; i++) {
-            TimerTask task = new TimerTask() {
+        for (int i = 1; i <= startCountdown+1; i++) {
+            task = new TimerTask() {
                 @Override
                 public void run() {
-                    countdownHandler.post(doA);
+                        countdownHandler.post(doA);
                 }
             };
+
             countdownTimer = new Timer();
             countdownTimer.schedule(task, i * 1000);
         }
+    }*/
+    public void startCountdownTimer() {
+        countDownTimer=new CountDownTimer(timeLeftMiliSeconds,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+            timeLeftMiliSeconds=millisUntilFinished;
+            updateCountDownText();
+            }
+
+            @Override
+            public void onFinish() {
+            timeLeftMiliSeconds=0;
+            updateCountDownText();
+            }
+        }.start();
+
+    }
+    public void updateCountDownText(){
+        int saniye=(int)(timeLeftMiliSeconds/1000);
+        if(saniye!=0){
+            tv_timer.setText(String.valueOf(saniye));
+        }
+        else{
+            btn_next.setText("NEXT");
+            Toasty.warning(getApplicationContext(), "Time's UP",1000).show();
+            Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
+            relative_dur.setVisibility(View.INVISIBLE);
+        }
+
+
+
+
     }
 
-    final Runnable doA = new Runnable() {
-        @Override
-        public void run() {
-            if (currentCountdown != 0 && btn_next.getText().equals("CHECK") && stopTimer!=true) {
-                tv_timer.setText("" + currentCountdown);
-                currentCountdown--;
-            }
-            else if(currentCountdown<2){
-               relative_dur.setVisibility(View.INVISIBLE);
-                currentCountdown = startCountdown;
-                btn_next.setText("NEXT");
-                Toasty.warning(getApplicationContext(), "Time's UP",1000).show();
-                Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
-
-            }
-            else if(stopTimer==true) {
-                relative_dur.setVisibility(View.INVISIBLE);
-              //  Toast.makeText(getApplicationContext(), "5555", Toast.LENGTH_SHORT).show();
-             //   currentCountdown = startCountdown;
-                //startCountdownTimer();
-            }
-        }
-    };
 
 
 
-
+    boolean flag=true;
 
     TextView tv_userMail;
 
@@ -409,7 +428,7 @@ public void updateTimer(){
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                startCountdownTimer();
+               // startCountdownTimer();
                firstClick++;
                 relative_dur.setVisibility(View.VISIBLE);
                 long childrenCount = dataSnapshot.getChildrenCount();
@@ -425,6 +444,8 @@ public void updateTimer(){
                             + getir.getAnlam()
                     );
                 }
+
+                timeLeftMiliSeconds=startCountdown;///***///
 
                 int randomNumberCevap=1+new Random().nextInt(4);//hangi şıkka koyulacak
 
@@ -516,7 +537,8 @@ public void updateTimer(){
 
 
                 }
-
+                timeLeftMiliSeconds=startCountdown;
+                startCountdownTimer();
 
             }
 
@@ -535,24 +557,29 @@ public void updateTimer(){
             public void onClick(View v) {
 
                 if (btn_next.getText() == "CHECK") {
+
+
                     relative_dur.setVisibility(View.INVISIBLE);
                     sayac++;
                     stopTimer=true;
                     checkKontrol=true;
-                    currentCountdown=startCountdown;
+
+                   /// currentCountdown=startCountdown;
                   //  resetTimer();
                     ///////Şıkların doğruluğu kontrol ediliyor 32896
 
 
                     //   while (tv_timer.getText()!="1"){
 
-                    if (rbtn_a.isChecked()) {
+                  if (rbtn_a.isChecked()) {
                         if (rbtn_a.getText() == dogruCevap) {
+
+
                             Toasty.success(getApplicationContext(),"Correct",1000).show();
 
                         } else {
-                         //   Toasty.error(getApplicationContext(), "Wrong Answer", 1000).show();
-                           // Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
+                          Toasty.error(getApplicationContext(), "Wrong Answer", 1000).show();
+                          Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
 
 
                         }
@@ -563,8 +590,8 @@ public void updateTimer(){
                             Toasty.success(getApplicationContext(),"Correct",1000).show();
 
                         } else {
-                           // Toasty.error(getApplicationContext(), "Wrong Answer", 1000).show();
-                          //  Toasty.info(getApplicationContext(), dogruCevap,1000).show();
+                           Toasty.error(getApplicationContext(), "Wrong Answer", 1000).show();
+                        Toasty.info(getApplicationContext(), dogruCevap,1000).show();
 
                         }
 
@@ -574,8 +601,8 @@ public void updateTimer(){
                             Toasty.success(getApplicationContext(),"Correct",1000).show();
 
                         } else {
-                          //  Toasty.error(getApplicationContext(), "Wrong Answer",1000).show();
-                          //  Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
+                           Toasty.error(getApplicationContext(), "Wrong Answer",1000).show();
+                          Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
 
                         }
 
@@ -583,26 +610,26 @@ public void updateTimer(){
                     } else if (rbtn_d.isChecked()) {
                         if (rbtn_d.getText() == dogruCevap) {
                             Toasty.success(getApplicationContext(),"Correct",1000).show();
-                            // rbtn_d.setChecked(false);
+                            rbtn_d.setChecked(false);
                         } else {
-                         //   Toasty.error(getApplicationContext(), "Wrong Answer",1000).show();
-                         //   Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
+                           Toasty.error(getApplicationContext(), "Wrong Answer",1000).show();
+                           Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
 
                         }
 
 
                        // rbtn_d.setChecked(false);
                     } else {
-                        btn_next.setText("NEXT");
+                      /*  btn_next.setText("NEXT");
                         Toasty.warning(getApplicationContext(), "Time's UP",1000).show();
                         Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
-                        relative_dur.setVisibility(View.INVISIBLE);
+                        relative_dur.setVisibility(View.INVISIBLE);*/
                     }
-
+                    countDownTimer.cancel();
                     btn_next.setText("NEXT");
-
-
-             /*   rbtn_a.setChecked(false);
+                   /* countdownTimer.cancel();
+                    countdownTimer.purge();*/
+                    /*   rbtn_a.setChecked(false);
                 rbtn_b.setChecked(false);
                 rbtn_c.setChecked(false);
                 rbtn_d.setChecked(false);*/
@@ -612,7 +639,7 @@ public void updateTimer(){
                 else{
 
                     kontrolArrayList.clear();
-  /*   rbtn_a.setChecked(false);
+        /*   rbtn_a.setChecked(false);
                 rbtn_b.setChecked(false);
                 rbtn_c.setChecked(false);
                 rbtn_d.setChecked(false);*/
@@ -621,15 +648,17 @@ public void updateTimer(){
 
                     sayac++;
                     relative_dur.setVisibility(View.VISIBLE);
-                checkKontrol=false;
-                stopTimer=false;
+            //    checkKontrol=false;
+             //   stopTimer=false;
+                    timeLeftMiliSeconds=startCountdown;
 
-               timeLeftMiliSeconds=11000;
+
+            //   timeLeftMiliSeconds=11000;
                 //updateTimer();
                // startTimer();
 
               //   countDownTimer.cancel();
-                 startCountdownTimer();
+                /* startCountdownTimer();*/
 
 
                     /* int randomNumberCevap=1+new Random().nextInt(4);//hangi şıkka koyulacak
@@ -724,12 +753,13 @@ public void updateTimer(){
 
                             }
                             m++;
+
                         }
 
                     }
 
 
-
+                    startCountdownTimer();
                     btn_next.setText("CHECK");
                 }
 
@@ -995,7 +1025,9 @@ public void updateTimer(){
         }
 
         super.onDestroy();
-
+        if(countDownTimer!=null){
+            countDownTimer.cancel();
+        }
 
         unregisterReceiver(mReceiver);
     }

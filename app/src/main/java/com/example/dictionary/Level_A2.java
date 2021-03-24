@@ -65,7 +65,14 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
 
     boolean checkKontrol=false;
     private DrawerLayout drawer;
+
+
     Timer countdownTimer;
+
+
+
+
+
     Toolbar toolbar;
     RadioGroup radioGroup;
     TextView teztext;
@@ -120,6 +127,8 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
 
         }
     }
+
+
     final Runnable doA = new Runnable() {
         @Override
         public void run() {
