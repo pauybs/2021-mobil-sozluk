@@ -40,9 +40,10 @@
             android:background="#4c98cf"
             android:drawableLeft="@drawable/ic_quiz5"
             android:padding="20dp"
+            android:textSize="20sp"
             android:textAllCaps="false"
             android:textColor="#d4fefe"
-            android:textSize="20sp"
+
 
             android:textStyle="bold" />
 
@@ -86,7 +87,9 @@
             android:textAllCaps="false"
             android:textColor="#d4fefe"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            />
+
 
     </LinearLayout>
 

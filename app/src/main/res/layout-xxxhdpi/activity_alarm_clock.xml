@@ -74,8 +74,6 @@
             android:layout_marginLeft="103dp"
             android:layout_marginRight="103dp"
             android:background="@drawable/button_shape"
-            android:layout_marginTop="150dp"
-
             android:gravity="top|bottom|center_vertical|center_horizontal"
             android:text="SET"
 

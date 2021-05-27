@@ -42,12 +42,17 @@
         <item>A2</item>
         <item>B1</item>
     </string-array>
-
+    <string name="score">TOP PLAYERS</string>
+    <string name="nicknameBaslik">NickName</string>
+   <string name="scoreBaslik">Score</string>
     <string name="tez">Bu Proje Pamukkale Üniversitesi Yönetim Bilişim Sistemleri Lisans Tezi Kapsamında Doğukan Çelik Tarafından Hazırlanmıştır</string>
     <string name="tez2"> This Project Was Prepared By Doğukan Çelik Within The Scope Of Pamukkale University Management Information Systems Undergraduate Thesis</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="app_id">105179689889</string>
+    <string name="leaderboard_id">CgkIy6r1sLYIEAIQAA</string>
+
 </resources>
 
 

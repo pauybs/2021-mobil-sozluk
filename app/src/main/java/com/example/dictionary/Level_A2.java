@@ -95,7 +95,7 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
     int m=0;
     TextView tv_timer;
     CountDownTimer countDownTimer;
-    long timeLeftMiliSeconds=11000;
+    long timeLeftMiliSeconds;
     boolean timerRuning;
     int sayac=0;
     TextView tv_soru;
@@ -106,54 +106,47 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
     SeekBar sb_pitch;
     TextToSpeech textToSpeech;
     ArrayList<Integer>kontrolArrayList =new ArrayList<>();
+    ScoreboardGetir scoreboardGetir;
 
-
-    int startCountdown = 10;
+    int startCountdown = 10100;
     int currentCountdown;
     Handler countdownHandler = new Handler();
 
     public void startCountdownTimer() {
-        currentCountdown = startCountdown;
-        stopTimer=false;
-        for (int i = 1; i <= startCountdown; i++) {
-            TimerTask task = new TimerTask() {
-                @Override
-                public void run() {
-                    countdownHandler.post(doA);
-                }
-            };
-            countdownTimer = new Timer();
-            countdownTimer.schedule(task, i * 1000);
+        countDownTimer=new CountDownTimer(timeLeftMiliSeconds,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeftMiliSeconds=millisUntilFinished;
+                updateCountDownText();
+            }
 
+            @Override
+            public void onFinish() {
+                timeLeftMiliSeconds=0;
+                updateCountDownText();
+            }
+        }.start();
+
+    }
+    public void updateCountDownText(){
+        int saniye=(int)(timeLeftMiliSeconds/1000);
+        if(saniye!=0){
+            tv_timer.setText(String.valueOf(saniye));
         }
+        else{
+            btn_next.setText("NEXT");
+            Toasty.warning(getApplicationContext(), "Time's UP",1000).show();
+            Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
+            relative_dur.setVisibility(View.INVISIBLE);
+        }
+
+
+
+
     }
 
 
-    final Runnable doA = new Runnable() {
-        @Override
-        public void run() {
-            if (currentCountdown != 0 && btn_next.getText().equals("CHECK") && stopTimer!=true) {
-                tv_timer.setText("" + currentCountdown);
 
-                currentCountdown--;
-            }
-            else if(currentCountdown<2){
-                relative_dur.setVisibility(View.INVISIBLE);
-                currentCountdown = startCountdown;
-                btn_next.setText("NEXT");
-                Toasty.warning(getApplicationContext(), "Time's UP",1000).show();
-                Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
-
-            }
-            else if(stopTimer==true) {
-                relative_dur.setVisibility(View.INVISIBLE);
-
-
-                currentCountdown = startCountdown;
-                //startCountdownTimer();
-            }
-        }
-    };
 
     /*  public void startStop(){
           if(timerRuning){
@@ -240,8 +233,12 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
     String dogruCevap;
     Map<String, String> sozluk = new HashMap<String, String>();
     Map<String, String> sozlukiki = new HashMap<String, String>();
+    int baslangicScore;
+    String baslangicMail;
+    String baslangicNickname;
     final ArrayList gelenveri= new ArrayList();
     final DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Getir2");
+    DatabaseReference dbreference2 = FirebaseDatabase.getInstance().getReference("Getir6");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -307,7 +304,7 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
         final RadioButton rbtn_d = (RadioButton) findViewById(R.id.rbtn_d);
 
         btn_next = (Button) findViewById(R.id.btn_next);
-        btn_home = (ImageButton) findViewById(R.id.ibtn_home);
+
         tv_timer =(TextView)findViewById(R.id.tv_timer);
 
         textToSpeech=new TextToSpeech(this, new TextToSpeech.OnInitListener() {
@@ -323,15 +320,6 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
         final ArrayList gelenKelime = new ArrayList();
         final ArrayList gelenAnlam = new ArrayList();
 
-        btn_home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(getApplicationContext(),Anasayfa.class);
-                startActivity(intent);
-
-            }
-        });
-
 
         imgbtn_listen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -341,6 +329,29 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
             }
         });
 
+        dbreference2.orderByChild("mail").equalTo(possibleEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                dbreference2=FirebaseDatabase.getInstance().getReference("Getir6").child(possibleEmail.replace(".","").replace("$","").replace("#","").replace("[","").replace("]",""));
+
+                for(DataSnapshot verigetir2 : dataSnapshot.getChildren())
+                {
+
+                    baslangicScore=Integer.parseInt(verigetir2.child("score").getValue().toString());
+                    baslangicMail=verigetir2.child("mail").getValue().toString();
+                    baslangicNickname=verigetir2.child("nickname").getValue().toString();
+                    scoreboardGetir=new ScoreboardGetir(baslangicMail,baslangicNickname,baslangicScore);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         btn_next.setText("CHECK");
 
@@ -348,7 +359,7 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                startCountdownTimer();
+                //startCountdownTimer();
 
                 relative_dur.setVisibility(View.VISIBLE);
 
@@ -365,7 +376,7 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
                             + getir.getAnlam()
                     );
                 }
-
+                timeLeftMiliSeconds=startCountdown;
                 int randomNumberCevap=1+new Random().nextInt(4);//hangi şıkka koyulacak
 
                 dogruCevap=" ";
@@ -453,7 +464,8 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
 
 
                 }
-
+                timeLeftMiliSeconds=startCountdown;
+                startCountdownTimer();
 
             }
 
@@ -484,6 +496,12 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
 
                     if (rbtn_a.isChecked()) {
                         if (rbtn_a.getText() == dogruCevap) {
+                            baslangicScore=baslangicScore+2;
+                            Map<String, Object> updates = new HashMap<String,Object>();
+                            updates.put("mail",baslangicMail);
+                            updates.put("nickname",baslangicNickname);
+                            updates.put("score",baslangicScore);
+                            dbreference2.updateChildren(updates);
                             Toasty.success(getApplicationContext(), "Correct", Toast.LENGTH_LONG).show();
 
                         } else {
@@ -496,6 +514,12 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
                         //rbtn_a.setChecked(false);
                     } else if (rbtn_b.isChecked()) {
                         if (rbtn_b.getText() == dogruCevap) {
+                            baslangicScore=baslangicScore+2;
+                            Map<String, Object> updates = new HashMap<String,Object>();
+                            updates.put("mail",baslangicMail);
+                            updates.put("nickname",baslangicNickname);
+                            updates.put("score",baslangicScore);
+                            dbreference2.updateChildren(updates);
                             Toasty.success(getApplicationContext(), "Correct", Toast.LENGTH_LONG).show();
 
                         } else {
@@ -507,6 +531,12 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
                       //  rbtn_b.setChecked(false);
                     } else if (rbtn_c.isChecked()) {
                         if (rbtn_c.getText() == dogruCevap) {
+                            baslangicScore=baslangicScore+2;
+                            Map<String, Object> updates = new HashMap<String,Object>();
+                            updates.put("mail",baslangicMail);
+                            updates.put("nickname",baslangicNickname);
+                            updates.put("score",baslangicScore);
+                            dbreference2.updateChildren(updates);
                             Toasty.success(getApplicationContext(), "Correct", Toast.LENGTH_LONG).show();
 
                         } else {
@@ -518,6 +548,12 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
                        // rbtn_c.setChecked(false);
                     } else if (rbtn_d.isChecked()) {
                         if (rbtn_d.getText() == dogruCevap) {
+                            baslangicScore=baslangicScore+2;
+                            Map<String, Object> updates = new HashMap<String,Object>();
+                            updates.put("mail",baslangicMail);
+                            updates.put("nickname",baslangicNickname);
+                            updates.put("score",baslangicScore);
+                            dbreference2.updateChildren(updates);
                             Toasty.success(getApplicationContext(), "Correct", Toast.LENGTH_LONG).show();
 
                         } else {
@@ -529,11 +565,12 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
 
                       //  rbtn_d.setChecked(false);
                     } else {
-                        btn_next.setText("NEXT");
+                       /* btn_next.setText("NEXT");
                         Toasty.warning(getApplicationContext(), "Time's UP",1000).show();
                         Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
-                        relative_dur.setVisibility(View.INVISIBLE);
+                        relative_dur.setVisibility(View.INVISIBLE);*/
                     }
+                    countDownTimer.cancel();
                     btn_next.setText("NEXT");
 
 
@@ -549,9 +586,9 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
                     radioGroup.clearCheck();
                     sayac++;
                     relative_dur.setVisibility(View.VISIBLE);
-                 checkKontrol=false;
-                 stopTimer=false;
-                 startCountdownTimer();
+               //  checkKontrol=false;
+               //  stopTimer=false;
+                    timeLeftMiliSeconds=startCountdown;
                     //     countDownTimer.cancel();
 
 
@@ -643,6 +680,8 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
                         }
 
                     }
+
+                    startCountdownTimer();
                     btn_next.setText("CHECK");
                 }
 
@@ -889,8 +928,11 @@ public class Level_A2 extends AppCompatActivity implements  NavigationView.OnNav
             textToSpeech.stop();
             textToSpeech.shutdown();
         }
-        super.onDestroy();
 
+        super.onDestroy();
+        if(countDownTimer!=null){
+            countDownTimer.cancel();
+        }
 
         unregisterReceiver(mReceiver);
     }

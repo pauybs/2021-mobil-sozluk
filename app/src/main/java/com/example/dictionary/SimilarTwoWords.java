@@ -35,6 +35,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -63,7 +65,7 @@ public class SimilarTwoWords extends AppCompatActivity  implements  NavigationVi
     int m=0;
     TextView tv_timer;
     CountDownTimer countDownTimer;
-    long timeLeftMiliSeconds=11000;
+    long timeLeftMiliSeconds;
     boolean timerRuning;
     int sayac=0;
     BroadcastReceiver mReceiver;
@@ -71,6 +73,7 @@ public class SimilarTwoWords extends AppCompatActivity  implements  NavigationVi
     String []veriayir;
     int count;
     int randomNumber ;
+    ScoreboardGetir scoreboardGetir;
     /*public void resetTimer() {
         timeLeftMiliSeconds=0;
         updateTimer();
@@ -147,54 +150,49 @@ public class SimilarTwoWords extends AppCompatActivity  implements  NavigationVi
     }*/
 
     Timer countdownTimer;
-    int startCountdown = 10;
+    int startCountdown = 10100;
     int currentCountdown;
     Handler countdownHandler = new Handler();
 
     public void startCountdownTimer() {
-        currentCountdown = startCountdown;
-        stopTimer=false;
-        for (int i = 1; i <= startCountdown; i++) {
-            TimerTask task = new TimerTask() {
-                @Override
-                public void run() {
-                    countdownHandler.post(doA);
-                }
-            };
-            countdownTimer = new Timer();
-            countdownTimer.schedule(task, i * 1000);
+        countDownTimer=new CountDownTimer(timeLeftMiliSeconds,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeftMiliSeconds=millisUntilFinished;
+                updateCountDownText();
+            }
 
-        }
+            @Override
+            public void onFinish() {
+                timeLeftMiliSeconds=0;
+                updateCountDownText();
+            }
+        }.start();
+
     }
-    final Runnable doA = new Runnable() {
-        @Override
-        public void run() {
-            if (currentCountdown != 0 && btn_next.getText().equals("CHECK") && stopTimer!=true) {
-                tv_timer.setText("" + currentCountdown);
-
-                currentCountdown--;
-            }
-            else if(currentCountdown<2){
-                relative_dur.setVisibility(View.INVISIBLE);
-                currentCountdown = startCountdown;
-                btn_next.setText("NEXT");
-                Toasty.warning(getApplicationContext(), "Time's UP",1000).show();
-                Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
-
-            }
-            else if(stopTimer==true) {
-                relative_dur.setVisibility(View.INVISIBLE);
-
-
-                currentCountdown = startCountdown;
-                //startCountdownTimer();
-            }
+    public void updateCountDownText(){
+        int saniye=(int)(timeLeftMiliSeconds/1000);
+        if(saniye!=0){
+            tv_timer.setText(String.valueOf(saniye));
         }
-    };
+        else{
+            btn_next.setText("NEXT");
+            Toasty.warning(getApplicationContext(), "Time's UP",1000).show();
+            Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
+            relative_dur.setVisibility(View.INVISIBLE);
+        }
+
+
+
+
+    }
 
 
     String dogruCevap;
-
+    int baslangicScore;
+    String baslangicMail;
+    String baslangicNickname;
+    DatabaseReference dbreference2 = FirebaseDatabase.getInstance().getReference("Getir6");
     final ArrayList gelenveri= new ArrayList();
     final DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Getir4");
 
@@ -228,7 +226,6 @@ public class SimilarTwoWords extends AppCompatActivity  implements  NavigationVi
         final RadioButton rbtn_b = (RadioButton) findViewById(R.id.rbtn_b);
 
         btn_next = (Button) findViewById(R.id.btn_next);
-        btn_home = (ImageButton) findViewById(R.id.ibtn_home);
         NavigationView navigationView=findViewById(R.id.nav_view);
 
         View header = navigationView.getHeaderView(0);
@@ -254,28 +251,35 @@ public class SimilarTwoWords extends AppCompatActivity  implements  NavigationVi
 
 
         tv_timer =(TextView)findViewById(R.id.tv_timer);
-
-
-
-
-        btn_home.setOnClickListener(new View.OnClickListener() {
+        btn_next.setText("CHECK");
+        dbreference2.orderByChild("mail").equalTo(possibleEmail).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(getApplicationContext(),Anasayfa.class);
-                startActivity(intent);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                dbreference2=FirebaseDatabase.getInstance().getReference("Getir6").child(possibleEmail.replace(".","").replace("$","").replace("#","").replace("[","").replace("]",""));
+
+                for(DataSnapshot verigetir2 : dataSnapshot.getChildren())
+                {
+
+                    baslangicScore=Integer.parseInt(verigetir2.child("score").getValue().toString());
+                    baslangicMail=verigetir2.child("mail").getValue().toString();
+                    baslangicNickname=verigetir2.child("nickname").getValue().toString();
+                    scoreboardGetir=new ScoreboardGetir(baslangicMail,baslangicNickname,baslangicScore);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
 
-
-
-        btn_next.setText("CHECK");
-
-
         dbreference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                startCountdownTimer();
+              //  startCountdownTimer();
                 relative_dur.setVisibility(View.VISIBLE);
                 long childrenCount = dataSnapshot.getChildrenCount();
                  count = (int) childrenCount;
@@ -290,7 +294,7 @@ public class SimilarTwoWords extends AppCompatActivity  implements  NavigationVi
                             + getir.getAnlam()
                     );
                 }
-
+                timeLeftMiliSeconds=startCountdown;
                 int randomNumberCevap=1+new Random().nextInt(2);//hangi şıkka koyulacak
 
                 dogruCevap=" ";
@@ -342,7 +346,8 @@ public class SimilarTwoWords extends AppCompatActivity  implements  NavigationVi
 
 
                 }
-
+                timeLeftMiliSeconds=startCountdown;
+                startCountdownTimer();
 
 
             }
@@ -370,6 +375,12 @@ public class SimilarTwoWords extends AppCompatActivity  implements  NavigationVi
 
                     if (rbtn_a.isChecked()) {
                         if (rbtn_a.getText() == dogruCevap) {
+                            baslangicScore=baslangicScore+1;
+                            Map<String, Object> updates = new HashMap<String,Object>();
+                            updates.put("mail",baslangicMail);
+                            updates.put("nickname",baslangicNickname);
+                            updates.put("score",baslangicScore);
+                            dbreference2.updateChildren(updates);
                             Toasty.success(getApplicationContext(),"Correct",Toast.LENGTH_LONG).show();
 
                         } else {
@@ -382,6 +393,12 @@ public class SimilarTwoWords extends AppCompatActivity  implements  NavigationVi
                        // rbtn_a.setChecked(false);
                     } else if (rbtn_b.isChecked()) {
                         if (rbtn_b.getText() == dogruCevap) {
+                            baslangicScore=baslangicScore+1;
+                            Map<String, Object> updates = new HashMap<String,Object>();
+                            updates.put("mail",baslangicMail);
+                            updates.put("nickname",baslangicNickname);
+                            updates.put("score",baslangicScore);
+                            dbreference2.updateChildren(updates);
                             Toasty.success(getApplicationContext(),"Correct",Toast.LENGTH_LONG).show();
 
                         } else {
@@ -393,11 +410,12 @@ public class SimilarTwoWords extends AppCompatActivity  implements  NavigationVi
                         //rbtn_b.setChecked(false);
                     }
                     else {
-                        btn_next.setText("NEXT");
+                       /* btn_next.setText("NEXT");
                         Toasty.warning(getApplicationContext(), "Time's UP",1000).show();
                         Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
-                        relative_dur.setVisibility(View.INVISIBLE);
+                        relative_dur.setVisibility(View.INVISIBLE);*/
                     }
+                    countDownTimer.cancel();
                     btn_next.setText("NEXT");
 
 
@@ -409,14 +427,16 @@ public class SimilarTwoWords extends AppCompatActivity  implements  NavigationVi
                 }
 
                 else {
+
                     sayac++;
                     radioGroup.clearCheck();
                     relative_dur.setVisibility(View.VISIBLE);
 
 
-                    checkKontrol=false;
-                    stopTimer=false;
-                    startCountdownTimer();
+                    /*checkKontrol=false;
+                    stopTimer=false;*/
+                  //  startCountdownTimer();
+                    timeLeftMiliSeconds=startCountdown;
 
                     int randomNumberCevap=1+new Random().nextInt(2);//hangi şıkka koyulacak
                     int boyut=gelenveri.size();
@@ -475,7 +495,7 @@ public class SimilarTwoWords extends AppCompatActivity  implements  NavigationVi
 
 
 
-
+                    startCountdownTimer();
                     btn_next.setText("CHECK");
                 }
 

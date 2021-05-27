@@ -89,10 +89,10 @@ public class Level_A1 extends AppCompatActivity  implements  NavigationView.OnNa
     SeekBar sb_speed;
     SeekBar sb_pitch;
     TextView tv_soru;
-
+    String id;
     Toast toast;
 
-    ProgressBar progressBar ;
+    ProgressBar progressBar;
     int progressbarDurum=0;
     Handler handler=new Handler();
     DataSnapshot dsnap;
@@ -104,7 +104,7 @@ public class Level_A1 extends AppCompatActivity  implements  NavigationView.OnNa
    ImageButton btn_home;
     TimerTask task;
 
-
+    ScoreboardGetir scoreboardGetir;
 
     int m=0;
     TextView tv_timer;
@@ -278,10 +278,14 @@ public void updateTimer(){
 
     }*/
     String dogruCevap;
-    Map<String, String> sozluk = new HashMap<String, String>();
-    Map<String, String> sozlukiki = new HashMap<String, String>();
     final ArrayList gelenveri= new ArrayList();
+    int baslangicScore;
+    String baslangicMail;
+    String baslangicNickname;
+    DatabaseReference dbreference2 = FirebaseDatabase.getInstance().getReference("Getir6");
     final DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Getir");
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -379,13 +383,10 @@ public void updateTimer(){
         final RadioButton rbtn_d = (RadioButton) findViewById(R.id.rbtn_d);
 
         btn_next = (Button) findViewById(R.id.btn_next);
-        btn_home = (ImageButton) findViewById(R.id.ibtn_home);
 
         tv_timer =(TextView)findViewById(R.id.tv_timer);
         
 
-        final ArrayList gelenKelime = new ArrayList();
-        final ArrayList gelenAnlam = new ArrayList();
 
 
         textToSpeech=new TextToSpeech(this, new TextToSpeech.OnInitListener() {
@@ -408,21 +409,32 @@ public void updateTimer(){
 
 
 
-        btn_home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(getApplicationContext(),Anasayfa.class);
-                startActivity(intent);
-
-            }
-        });
-
-
-
-
 
 
         btn_next.setText("CHECK");
+
+        dbreference2.orderByChild("mail").equalTo(possibleEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                 dbreference2=FirebaseDatabase.getInstance().getReference("Getir6").child(possibleEmail.replace(".","").replace("$","").replace("#","").replace("[","").replace("]",""));
+
+                for(DataSnapshot verigetir2 : dataSnapshot.getChildren())
+                {
+                   baslangicScore=Integer.parseInt(verigetir2.child("score").getValue().toString());
+                   baslangicMail=verigetir2.child("mail").getValue().toString();
+                   baslangicNickname=verigetir2.child("nickname").getValue().toString();
+                   scoreboardGetir=new ScoreboardGetir(baslangicMail,baslangicNickname,baslangicScore);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         dbreference.addValueEventListener(new ValueEventListener() {
 
@@ -434,6 +446,9 @@ public void updateTimer(){
                 long childrenCount = dataSnapshot.getChildrenCount();
                 int count = (int) childrenCount;
 
+
+
+
                 for(DataSnapshot verigetir : dataSnapshot.getChildren())
                 {
                     Getir getir = new Getir(
@@ -443,6 +458,7 @@ public void updateTimer(){
                     gelenveri.add(getir.getKelime() + "-"
                             + getir.getAnlam()
                     );
+
                 }
 
                 timeLeftMiliSeconds=startCountdown;///***///
@@ -558,6 +574,8 @@ public void updateTimer(){
 
                 if (btn_next.getText() == "CHECK") {
 
+                   // Getir getira1= new Getir(soru,cevap);
+                   // dbreference.child(id).setValue(getira1);
 
                     relative_dur.setVisibility(View.INVISIBLE);
                     sayac++;
@@ -572,9 +590,15 @@ public void updateTimer(){
                     //   while (tv_timer.getText()!="1"){
 
                   if (rbtn_a.isChecked()) {
+
                         if (rbtn_a.getText() == dogruCevap) {
 
-
+                            baslangicScore=baslangicScore+1;
+                            Map<String, Object> updates = new HashMap<String,Object>();
+                            updates.put("mail",baslangicMail);
+                            updates.put("nickname",baslangicNickname);
+                            updates.put("score",baslangicScore);
+                            dbreference2.updateChildren(updates);
                             Toasty.success(getApplicationContext(),"Correct",1000).show();
 
                         } else {
@@ -587,7 +611,15 @@ public void updateTimer(){
                       //  rbtn_a.setChecked(false);
                     } else if (rbtn_b.isChecked()) {
                         if (rbtn_b.getText() == dogruCevap) {
+                            baslangicScore=baslangicScore+1;
+                            Map<String, Object> updates = new HashMap<String,Object>();
+                            updates.put("mail",baslangicMail);
+                            updates.put("nickname",baslangicNickname);
+                            updates.put("score",baslangicScore);
+                            dbreference2.updateChildren(updates);
                             Toasty.success(getApplicationContext(),"Correct",1000).show();
+
+
 
                         } else {
                            Toasty.error(getApplicationContext(), "Wrong Answer", 1000).show();
@@ -598,7 +630,14 @@ public void updateTimer(){
                         //rbtn_b.setChecked(false);
                     } else if (rbtn_c.isChecked()) {
                         if (rbtn_c.getText() == dogruCevap) {
+                            baslangicScore=baslangicScore+1;
+                            Map<String, Object> updates = new HashMap<String,Object>();
+                            updates.put("mail",baslangicMail);
+                            updates.put("nickname",baslangicNickname);
+                            updates.put("score",baslangicScore);
+                            dbreference2.updateChildren(updates);
                             Toasty.success(getApplicationContext(),"Correct",1000).show();
+
 
                         } else {
                            Toasty.error(getApplicationContext(), "Wrong Answer",1000).show();
@@ -609,6 +648,12 @@ public void updateTimer(){
                        // rbtn_c.setChecked(false);
                     } else if (rbtn_d.isChecked()) {
                         if (rbtn_d.getText() == dogruCevap) {
+                            baslangicScore=baslangicScore+1;
+                            Map<String, Object> updates = new HashMap<String,Object>();
+                            updates.put("mail",baslangicMail);
+                            updates.put("nickname",baslangicNickname);
+                            updates.put("score",baslangicScore);
+                            dbreference2.updateChildren(updates);
                             Toasty.success(getApplicationContext(),"Correct",1000).show();
                             rbtn_d.setChecked(false);
                         } else {

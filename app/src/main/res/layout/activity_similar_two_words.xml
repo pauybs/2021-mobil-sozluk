@@ -120,18 +120,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="20dp">
 
-            <ImageButton
-                android:id="@+id/ibtn_home"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:adjustViewBounds="true"
-                android:background="#5b538a"
-                android:scaleType="fitCenter"
-                android:tint="#4c98cf"
-                app:srcCompat="@drawable/home"
 
-                />
 
         </RelativeLayout>
 

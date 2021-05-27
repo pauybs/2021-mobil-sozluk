@@ -1,5 +1,6 @@
 package com.example.dictionary;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -7,10 +8,24 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 
-public class Splasher extends AppCompatActivity {
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.games.LeaderboardsClient;
+import com.google.android.gms.games.leaderboard.Leaderboard;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import es.dmoral.toasty.Toasty;
+
+public class Splasher extends AppCompatActivity{
     BroadcastReceiver mReceiver;
+
     public static boolean splasherKontrol=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +40,10 @@ public class Splasher extends AppCompatActivity {
         //   filt.addAction(Intent.ACTION_SCREEN_ON);
         mReceiver = new UserPresentReciever();
         registerReceiver(mReceiver, filt);
+
+
+
+
             /*Thread zaman = new Thread() {
                 public void run() {
                     try {
@@ -46,7 +65,6 @@ public class Splasher extends AppCompatActivity {
 */
         startActivity(new Intent(Splasher.this,Anasayfa.class));
         finish();
-
 
     }
 

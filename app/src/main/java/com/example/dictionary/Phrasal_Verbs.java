@@ -70,12 +70,12 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
     int m=0;
     TextView tv_timer;
     CountDownTimer countDownTimer;
-    long timeLeftMiliSeconds=11000;
+    long timeLeftMiliSeconds;
     boolean timerRuning;
     int sayac=0;
     BroadcastReceiver mReceiver;
     RelativeLayout relative_dur;
-
+    ScoreboardGetir scoreboardGetir;
    /* public void resetTimer() {
         timeLeftMiliSeconds=0;
         updateTimer();
@@ -151,51 +151,42 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
 
     }*/
    Timer countdownTimer;
-   int startCountdown = 10;
+   int startCountdown = 10100;
     int currentCountdown;
     Handler countdownHandler = new Handler();
 
     public void startCountdownTimer() {
-        currentCountdown = startCountdown;
-        stopTimer=false;
-        for (int i = 1; i <= startCountdown; i++) {
-            TimerTask task = new TimerTask() {
-                @Override
-                public void run() {
-                    countdownHandler.post(doA);
-                }
-            };
-            countdownTimer = new Timer();
-            countdownTimer.schedule(task, i * 1000);
+        countDownTimer=new CountDownTimer(timeLeftMiliSeconds,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeftMiliSeconds=millisUntilFinished;
+                updateCountDownText();
+            }
 
-        }
+            @Override
+            public void onFinish() {
+                timeLeftMiliSeconds=0;
+                updateCountDownText();
+            }
+        }.start();
+
     }
-    final Runnable doA = new Runnable() {
-        @Override
-        public void run() {
-            if (currentCountdown != 0 && btn_next.getText().equals("CHECK") && stopTimer!=true) {
-                tv_timer.setText("" + currentCountdown);
-
-                currentCountdown--;
-            }
-            else if(currentCountdown<2){
-                relative_dur.setVisibility(View.INVISIBLE);
-                currentCountdown = startCountdown;
-                btn_next.setText("NEXT");
-                Toasty.warning(getApplicationContext(), "Time's UP",1000).show();
-                Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
-
-            }
-            else if(stopTimer==true) {
-                relative_dur.setVisibility(View.INVISIBLE);
-
-
-                currentCountdown = startCountdown;
-                //startCountdownTimer();
-            }
+    public void updateCountDownText(){
+        int saniye=(int)(timeLeftMiliSeconds/1000);
+        if(saniye!=0){
+            tv_timer.setText(String.valueOf(saniye));
         }
-    };
+        else{
+            btn_next.setText("NEXT");
+            Toasty.warning(getApplicationContext(), "Time's UP",1000).show();
+            Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
+            relative_dur.setVisibility(View.INVISIBLE);
+        }
 
+
+
+
+    }
 
 
     TextView tv_userMail;
@@ -210,7 +201,10 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
     Map<String, String> sozlukiki = new HashMap<String, String>();
     final ArrayList gelenveri= new ArrayList();
     final DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("Getir5");
-
+    int baslangicScore;
+    String baslangicMail;
+    String baslangicNickname;
+    DatabaseReference dbreference2 = FirebaseDatabase.getInstance().getReference("Getir6");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -269,7 +263,7 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
         final RadioButton rbtn_d = (RadioButton) findViewById(R.id.rbtn_d);
 
         btn_next = (Button) findViewById(R.id.btn_next);
-        btn_home = (ImageButton) findViewById(R.id.ibtn_home);
+
 
         tv_timer =(TextView)findViewById(R.id.tv_timer);
 
@@ -281,7 +275,6 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
                 }
             }
         });
-
         imgbtn_listen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -289,24 +282,36 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
 
             }
         });
-
-        btn_home.setOnClickListener(new View.OnClickListener() {
+        btn_next.setText("CHECK");
+        dbreference2.orderByChild("mail").equalTo(possibleEmail).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(getApplicationContext(),Anasayfa.class);
-                startActivity(intent);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                dbreference2=FirebaseDatabase.getInstance().getReference("Getir6").child(possibleEmail.replace(".","").replace("$","").replace("#","").replace("[","").replace("]",""));
+
+                for(DataSnapshot verigetir2 : dataSnapshot.getChildren())
+                {
+
+                    baslangicScore=Integer.parseInt(verigetir2.child("score").getValue().toString());
+                    baslangicMail=verigetir2.child("mail").getValue().toString();
+                    baslangicNickname=verigetir2.child("nickname").getValue().toString();
+                    scoreboardGetir=new ScoreboardGetir(baslangicMail,baslangicNickname,baslangicScore);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
-
-        btn_next.setText("CHECK");
-
 
         dbreference.addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                startCountdownTimer();
+                //startCountdownTimer();
                 relative_dur.setVisibility(View.VISIBLE);
                 long childrenCount = dataSnapshot.getChildrenCount();
                 int count = (int) childrenCount;
@@ -321,7 +326,7 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
                             + getir.getAnlam()
                     );
                 }
-
+                timeLeftMiliSeconds=startCountdown;
                 int randomNumberCevap=1+new Random().nextInt(4);//hangi şıkka koyulacak
 
                 dogruCevap=" ";
@@ -412,7 +417,8 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
 
 
                 }
-
+                timeLeftMiliSeconds=startCountdown;
+                startCountdownTimer();
 
             }
 
@@ -441,6 +447,12 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
 
                     if (rbtn_a.isChecked()) {
                         if (rbtn_a.getText() == dogruCevap) {
+                            baslangicScore=baslangicScore+4;
+                            Map<String, Object> updates = new HashMap<String,Object>();
+                            updates.put("mail",baslangicMail);
+                            updates.put("nickname",baslangicNickname);
+                            updates.put("score",baslangicScore);
+                            dbreference2.updateChildren(updates);
                             Toasty.success(getApplicationContext(),"Correct",Toast.LENGTH_LONG).show();
 
                         } else {
@@ -453,6 +465,12 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
                       //  rbtn_a.setChecked(false);
                     } else if (rbtn_b.isChecked()) {
                         if (rbtn_b.getText() == dogruCevap) {
+                            baslangicScore=baslangicScore+4;
+                            Map<String, Object> updates = new HashMap<String,Object>();
+                            updates.put("mail",baslangicMail);
+                            updates.put("nickname",baslangicNickname);
+                            updates.put("score",baslangicScore);
+                            dbreference2.updateChildren(updates);
                             Toasty.success(getApplicationContext(),"Correct",Toast.LENGTH_LONG).show();
 
                         } else {
@@ -464,6 +482,12 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
                        // rbtn_b.setChecked(false);
                     } else if (rbtn_c.isChecked()) {
                         if (rbtn_c.getText() == dogruCevap) {
+                            baslangicScore=baslangicScore+4;
+                            Map<String, Object> updates = new HashMap<String,Object>();
+                            updates.put("mail",baslangicMail);
+                            updates.put("nickname",baslangicNickname);
+                            updates.put("score",baslangicScore);
+                            dbreference2.updateChildren(updates);
                             Toasty.success(getApplicationContext(),"Correct",Toast.LENGTH_LONG).show();
 
                         } else {
@@ -475,6 +499,12 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
                       //  rbtn_c.setChecked(false);
                     } else if (rbtn_d.isChecked()) {
                         if (rbtn_d.getText() == dogruCevap) {
+                            baslangicScore=baslangicScore+4;
+                            Map<String, Object> updates = new HashMap<String,Object>();
+                            updates.put("mail",baslangicMail);
+                            updates.put("nickname",baslangicNickname);
+                            updates.put("score",baslangicScore);
+                            dbreference2.updateChildren(updates);
                             Toasty.success(getApplicationContext(),"Correct",Toast.LENGTH_LONG).show();
                         } else {
                             Toasty.error(getApplicationContext(), "Wrong Answer", Toast.LENGTH_LONG).show();
@@ -485,11 +515,12 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
 
                       //  rbtn_d.setChecked(false);
                     } else {
-                        btn_next.setText("NEXT");
+                        /*btn_next.setText("NEXT");
                         Toasty.warning(getApplicationContext(), "Time's UP",1000).show();
                         Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
-                        relative_dur.setVisibility(View.INVISIBLE);
+                        relative_dur.setVisibility(View.INVISIBLE);*/
                     }
+                    countDownTimer.cancel();
                     btn_next.setText("NEXT");
 
 
@@ -507,10 +538,10 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
                     sayac++;
                     relative_dur.setVisibility(View.VISIBLE);
 
-                    checkKontrol=false;
-                    stopTimer=false;
-                    startCountdownTimer();
-
+                  /*  checkKontrol=false;
+                    stopTimer=false;*/
+                 //   startCountdownTimer();
+                    timeLeftMiliSeconds=startCountdown;
 
                     //     countDownTimer.cancel();
 
@@ -611,8 +642,9 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
                     }
 
 
-
+                    startCountdownTimer();
                     btn_next.setText("CHECK");
+
                 }
 
 
@@ -658,7 +690,28 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
 
 
     }
+    @Override
+    protected void onDestroy(){ //Activity Kapatıldığı zaman receiver durduralacak.Uygulama arka plana alındığı zamanda receiver çalışmaya devam eder
 
+        if(textToSpeech!=null){
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
+
+        super.onDestroy();
+        if(countDownTimer!=null){
+            countDownTimer.cancel();
+        }
+        try {
+
+            unregisterReceiver(mReceiver);
+
+        } catch(IllegalArgumentException e) {
+
+            e.printStackTrace();
+        }
+
+    }
     private void Speak() {
         String kelimeal= tv_soru.getText().toString();
         float pitch=(float)sb_pitch.getProgress()/50;
@@ -686,7 +739,6 @@ public class Phrasal_Verbs extends AppCompatActivity implements  NavigationView.
                 Intent intent = new Intent(getApplicationContext(),Anasayfa.class);
                 startActivity(intent);
                 break;
-
             case R.id.nav_settings:
                 Intent intent2 = new Intent(getApplicationContext(),Settings.class);
                 startActivity(intent2);
