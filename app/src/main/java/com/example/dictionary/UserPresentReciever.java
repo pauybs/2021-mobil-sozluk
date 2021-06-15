@@ -27,11 +27,29 @@ public class UserPresentReciever extends BroadcastReceiver {
         //kilit ekranınından açmamızı sağlıyor
         boolean yourLocked = sharedPref.getBoolean("switch_kontrol", true);
         boolean yourLocked2 = sharedPref.getBoolean("GecisKontrol", true);
-
+        boolean levela1=sharedPref.getBoolean("a1kontrol",false);
+        boolean levela2=sharedPref.getBoolean("a2kontrol",false);
+        boolean levelb1=sharedPref.getBoolean("b1kontrol",false);
 
         //uygulama otomatik başlıyor
         if (launchIntent != null && yourLocked==true) {
-          context.startActivity(launchIntent);//null pointer check in case package name was not found
+         //  context.startActivity(launchIntent);//null pointer check in case package name was not found
+
+            if(levela1==true){
+                Intent gecisa1 = new Intent(context.getApplicationContext(),Level_A1.class);
+                context.startActivity(gecisa1);
+
+            }
+            if(levela2==true){
+                Intent gecisa1 = new Intent(context.getApplicationContext(),Level_A2.class);
+                context.startActivity(gecisa1);
+
+            }
+            if(levelb1==true){
+                Intent gecisa1 = new Intent(context.getApplicationContext(),Level_A3.class);
+                context.startActivity(gecisa1);
+            }
+
 
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean("GecisKontrol",true);

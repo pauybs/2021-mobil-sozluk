@@ -62,7 +62,7 @@ public class VoiceToText extends AppCompatActivity {
         imgbtn_voice=findViewById(R.id.imgbtn_voice);
 
 
-        //0-143 arası rastgele sayı oluşturuldu.
+
         final ArrayList gelenveri= new ArrayList();
 
 
@@ -107,34 +107,18 @@ public class VoiceToText extends AppCompatActivity {
         imgbtn_voice.setOnClickListener(new View.OnClickListener() {//konuşma penceresi tanımlandı.
             @Override
             public void onClick(View v) {
-
                 loadingDialog = new ProgressDialog(context,R.style.MyAlertDialogStyle);
-
                 loadingDialog.setCancelable(false);
-
                 loadingDialog.setMessage("Please Speak");
-
-
                 loadingDialog.show();
-
                 speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
-
                 final ArrayList kayit=new ArrayList();
-
                 speechRecognizer.setRecognitionListener(new RecognitionListener() {
-
                     @Override public void onRmsChanged(float rmsdB) {
-
-                        // TODO Auto-generated method stub
-
                     }
-
                     @Override public void onResults(Bundle results) {
-
                         loadingDialog.dismiss();
-
                         ArrayList speechResultSentence = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-
                         ses="";
                         for(int i=0;i<speechResultSentence.size();i++){
                             ses+=speechResultSentence.get(i);
@@ -148,52 +132,34 @@ public class VoiceToText extends AppCompatActivity {
                             sayac2++;
                             if(sayac2==3){
                                 imgbtn_voice.setVisibility(View.INVISIBLE);
-
                                 AlertDialog.Builder alert3 = new AlertDialog.Builder(context,R.style.AlertDialogStyle);
                                 alert3.setTitle("Answered Wrong 3 Times");
                                 alert3.setMessage("Do You Want To Turn Off The Alarm By Entering Text?");
-
-
-
-
-
                                 alert3.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
-
                                         AlertDialog.Builder alert4 = new AlertDialog.Builder(context,R.style.AlertDialogStyle);
                                         alert4.setTitle("ANSWER");
                                         alert4.setMessage(gelenKelime.toLowerCase());
-
-
                                         final EditText input = new EditText(context);
                                         input.setTextColor(Integer.parseInt("#d4fefe"));
                                         alert4.setView(input);
-
                                         alert4.setPositiveButton("COMPLETE", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int whichButton) {
                                                 boolean dialogKapat=false;
-
                                                 while(dialogKapat!=true){
                                                     String value = input.getText().toString();
                                                     if(gelenKelime.toLowerCase().equals(value)){
-
                                                         dialogKapat=true;
-
                                                     }
                                                 }
-                                                //Alarm Kapanmadı
-
                                                 Ringtone ringtone = AlarmReceiver.ringtone;
                                                 ringtone.stop();
-
-
                                             }
                                         });
                                         alert4.show();
                                     }
 
                                 });
-
                                 alert3.setNegativeButton("NO",
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
@@ -204,25 +170,9 @@ public class VoiceToText extends AppCompatActivity {
                                             }
                                         });
                                 alert3.show();
-
-
-
-
-
-
-
-
-
                             }
 
                         }
-
-
-
-
-
-
-
 
                     } @Override public void onReadyForSpeech(Bundle params) {
 
@@ -237,10 +187,8 @@ public class VoiceToText extends AppCompatActivity {
                         // TODO Auto-generated method stub
 
                     } @Override public void onError(int error) {
-
                         loadingDialog.dismiss();
                         Toast.makeText(getApplicationContext(), "An Error Has Occurred, Please Try Again...", Toast.LENGTH_LONG).show();
-
                         sayac++;
                         if(sayac==3){
                             imgbtn_voice.setVisibility(View.INVISIBLE);
@@ -248,47 +196,30 @@ public class VoiceToText extends AppCompatActivity {
                             AlertDialog.Builder alert = new AlertDialog.Builder(context,R.style.AlertDialogStyle);
                             alert.setTitle("Answered Wrong 3 Times");
                             alert.setMessage("Do You Want To Turn Off The Alarm By Entering Text?");
-
-
-
-
-
                             alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
-
                                     AlertDialog.Builder alert2 = new AlertDialog.Builder(context,R.style.AlertDialogStyle);
                                     alert2.setTitle("ANSWER");
                                     alert2.setMessage(gelenKelime.toLowerCase());
-
-
                                     final EditText input = new EditText(context);
                                     alert2.setView(input);
-
                                     alert2.setPositiveButton("COMPLETE", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int whichButton) {
                                             boolean dialogKapat=false;
-
                                             while(dialogKapat!=true){
                                                 String value = input.getText().toString();
                                                 if(gelenKelime.toLowerCase().equals(value)){
-
                                                     dialogKapat=true;
-
                                                 }
                                             }
-                                            //Alarm Kapanmadı
-
                                             Ringtone ringtone = AlarmReceiver.ringtone;
                                             ringtone.stop();
-
-
                                         }
                                     });
                                     alert2.show();
                                 }
 
                             });
-
                             alert.setNegativeButton("NO",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
@@ -299,29 +230,16 @@ public class VoiceToText extends AppCompatActivity {
                                         }
                                     });
                             alert.show();
-
-
-
-
-
-
-
-
-
                         }
-
-
                     } @Override public void onEndOfSpeech() { loadingDialog .setMessage("Recording's Over.Fetching Results");
 
                     } @Override public void onBufferReceived(byte[] buffer) { }
 
                     @Override public void onBeginningOfSpeech() {
-
                         loadingDialog.setMessage("Recording Started");
 
                     } });
-
-                Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);//voice to text servisi çağırıldı
+                Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());//paketin ismi servise gönderildi.
                 recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS , 100);
                 recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -329,16 +247,8 @@ public class VoiceToText extends AppCompatActivity {
                 recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
                 speechRecognizer.startListening(recognizerIntent);
 
-
-
-
-
-
-
             }
         });
-
-
 
     }
 
@@ -346,8 +256,6 @@ public class VoiceToText extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             String requiredPermission = Manifest.permission.RECORD_AUDIO;
 
-            // If the user previously denied this permission then show a message explaining why
-            // this permission is needed
             if (checkCallingOrSelfPermission(requiredPermission) == PackageManager.PERMISSION_DENIED) {
                 requestPermissions(new String[]{requiredPermission}, 101);
             }

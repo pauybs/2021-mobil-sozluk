@@ -117,9 +117,8 @@ public class AlarmClock extends AppCompatActivity implements View.OnClickListene
         runnable= new Runnable() {
             @Override
             public void run() {
-                zaman=gosterim.format(new Date());//new date ile tarih alındı belirlenen formata dönüştürüldü.
+                zaman=gosterim.format(new Date());
                 tc_textclock.setText(zaman);
-
                 handle.postDelayed(runnable,1000);//1 saniye bekle.
             }
         };
@@ -136,9 +135,8 @@ public class AlarmClock extends AppCompatActivity implements View.OnClickListene
     }
 
     private void openPickerDialog(boolean t){
-
         Calendar calendar=Calendar.getInstance();
-        timePickerDialog=new TimePickerDialog(AlarmClock.this,R.style.themeOnverlay_timePicker,onTimeSetListener,calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),t);
+        timePickerDialog=new TimePickerDialog(AlarmClock.this,R.style.themeOnverlay_timePicker, onTimeSetListener,calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),t);
         timePickerDialog.setTitle("");
         timePickerDialog.show();
 
@@ -182,7 +180,10 @@ public class AlarmClock extends AppCompatActivity implements View.OnClickListene
                 Intent intent = new Intent(getApplicationContext(),Anasayfa.class);
                 startActivity(intent);
                 break;
-
+            case R.id.nav_scoreboard:
+                Intent intent5=new Intent(getApplicationContext(),Scoreboard.class);
+                startActivity(intent5);
+                break;
             case R.id.nav_settings:
                 Intent intent2 = new Intent(getApplicationContext(),Settings.class);
                 startActivity(intent2);

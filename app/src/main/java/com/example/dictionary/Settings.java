@@ -112,9 +112,9 @@ public class Settings extends AppCompatActivity   implements  NavigationView.OnN
 
 
 
-     sharedPref = this.getSharedPreferences("take",Context.MODE_PRIVATE);
+        sharedPref = this.getSharedPreferences("take",Context.MODE_PRIVATE);//kullanıcının tercih tutulur
 
-
+//başlangıç hem özellik açık hemde a1 default olarak aktif
         boolean yourLocked = sharedPref.getBoolean("switch_kontrol", true);
         final boolean a1kontrol = sharedPref.getBoolean("a1kontrol", true);
         final boolean a2kontrol= sharedPref.getBoolean("a2kontrol", false);
@@ -153,7 +153,7 @@ public class Settings extends AppCompatActivity   implements  NavigationView.OnN
         sp_spinner.setAdapter(spinnerArrayAdapter);
 
         if(a1kontrol==true){
-
+//seçilen üste geliyor
             spinnerPosition = spinnerArrayAdapter.getPosition("A1");
 
             sp_spinner.setSelection(spinnerPosition,false);
@@ -196,7 +196,7 @@ public class Settings extends AppCompatActivity   implements  NavigationView.OnN
                 if (!isSpinnerTouched) return;
 
                 String s=sp_spinner.getSelectedItem().toString();
-                Toast.makeText(getApplicationContext(),"S="+s,Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),"S="+s,Toast.LENGTH_LONG).show();
 
             //    String Locked2 = sharedPref2.getString("LEVEL", "A1");
 
@@ -229,7 +229,7 @@ public class Settings extends AppCompatActivity   implements  NavigationView.OnN
                     editor.apply();
 
                 }
-
+//güncelliyoruz
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("Options",s);
                 editor.apply();
@@ -333,7 +333,10 @@ public class Settings extends AppCompatActivity   implements  NavigationView.OnN
                 Intent intent = new Intent(getApplicationContext(),Anasayfa.class);
                 startActivity(intent);
                 break;
-
+            case R.id.nav_scoreboard:
+                Intent intent5=new Intent(getApplicationContext(),Scoreboard.class);
+                startActivity(intent5);
+                break;
             case R.id.nav_settings:
                 Intent intent2 = new Intent(getApplicationContext(),Settings.class);
                 startActivity(intent2);

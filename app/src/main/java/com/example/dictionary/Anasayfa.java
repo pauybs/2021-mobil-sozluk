@@ -70,7 +70,6 @@ import java.util.regex.Pattern;
 
 public class Anasayfa extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener{
     TextView tv_userMail;
-
     private ImageView defaultPicture;
     private DrawerLayout drawer;
     String possibleEmail;
@@ -78,16 +77,6 @@ public class Anasayfa extends AppCompatActivity implements  NavigationView.OnNav
     private static final String LOG_TAG = "Otomatik internet Kontrol¸";
     private NetworkChangeReceiver receiver;
     String nickname;
-
-
-
-//
-
-
-   // private boolean greetingDisplayed;
-
-
-//postRef = ref.child("BusNumber");
  DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference().child("Getir6");
 
  Toolbar toolbar;
@@ -97,20 +86,7 @@ public class Anasayfa extends AppCompatActivity implements  NavigationView.OnNav
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_anasayfa);
 
-        //greetingDisplayed=false;
-       /* AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        initialize(new GdxGame(this), config);*/
-
-
-        /*GoogleSignInClient user;
-
-        user = GoogleSignIn.getClient(this,
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN).build());
-        user.silentSignIn();*/
-
         defaultPicture=findViewById(R.id.defaultPicture);
-
-
 
         Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
         Account[] accounts = AccountManager.get(this).getAccounts();
@@ -123,36 +99,24 @@ public class Anasayfa extends AppCompatActivity implements  NavigationView.OnNav
             }
         }
 
-
-
-
-
-
-
-
         NavigationView navigationView=findViewById(R.id.nav_view);
 
         View header = navigationView.getHeaderView(0);
         tv_userMail = (TextView) header.findViewById(R.id.tv_userMail);
         tv_userMail.setText(possibleEmail);
 
-
         dbreference.orderByChild("mail").equalTo(possibleEmail).addListenerForSingleValueEvent(new ValueEventListener() {
 
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                     if(dataSnapshot.exists()){
-
-
                     }
                     else{
-                       Toast.makeText(getApplicationContext(), "ccccccccccccccccccccccc", Toast.LENGTH_SHORT).show();
                         ScoreboardGetir scoreboardGetir=new ScoreboardGetir(possibleEmail,getAlphaNumericString(7),0);
-                      dbreference.child(possibleEmail.replace(".","").replace("$","").replace("#","").replace("[","").replace("]","")).setValue(scoreboardGetir);
+                      dbreference.child(possibleEmail.replace(".","").replace("$","").
+                              replace("#","").replace("[","").replace("]",""))
+                              .setValue(scoreboardGetir);
                     }
-
-
-
             }
 
             @Override
@@ -217,13 +181,12 @@ public class Anasayfa extends AppCompatActivity implements  NavigationView.OnNav
 
         String quizText="<big> <font color='#d4fefe'>"
                 + "QUIZ" + "</font> </big>" + "<br />"
-                + "<small>" + "Select your level and start" + "</small>";;
-
+                + "<small>" + "Select your level and start" + "</small>";
         btn_start.setText(Html.fromHtml(quizText));
 
         String similarText="<big> <font color='#d4fefe'>"
                 + "TWO WORDS" + "</font> </big>" + "<br />"
-                + "<small>" + "Find the right one from two words that look alike" + "</small>";;
+                + "<small>" + "Find the right one from two words that look alike" + "</small>";
 
         btn_similarTwoWords.setText(Html.fromHtml(similarText));
 
@@ -236,7 +199,7 @@ public class Anasayfa extends AppCompatActivity implements  NavigationView.OnNav
 
         String alarmText="<big> <font color='#d4fefe'>"
                 + "ALARM" + "</font> </big>" + "<br />"
-                + "<small>" + "Turn off the alarm with your voice when setup sounds" + "</small>";;
+                + "<small>" + "Turn off the alarm with your voice when setup sounds" + "</small>";
 
         btn_alarm.setText(Html.fromHtml(alarmText));
 
@@ -323,10 +286,6 @@ public class Anasayfa extends AppCompatActivity implements  NavigationView.OnNav
                 Intent intent4 = new Intent(getApplicationContext(),Share.class);
                 startActivity(intent4);
                 break;
-
-
-
-
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -334,28 +293,19 @@ public class Anasayfa extends AppCompatActivity implements  NavigationView.OnNav
     ////new
 
     static String getAlphaNumericString(int n) {
-
-        // chose a Character random from this String
         String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 + "0123456789"
                 + "abcdefghijklmnopqrstuvxyz";
-
-        // create StringBuffer size of AlphaNumericString
         StringBuilder sb = new StringBuilder(n);
 
         for (int i = 0; i < n; i++) {
 
-            // generate a random number between
-            // 0 to AlphaNumericString variable length
             int index
                     = (int) (AlphaNumericString.length()
                     * Math.random());
-
-            // add Character one by one in end of sb
             sb.append(AlphaNumericString
                     .charAt(index));
         }
-
         return "User"+"-"+sb.toString();
     }
 

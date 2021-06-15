@@ -81,7 +81,10 @@ public class About extends AppCompatActivity implements  NavigationView.OnNaviga
                 Intent intent = new Intent(getApplicationContext(),Anasayfa.class);
                 startActivity(intent);
                 break;
-
+            case R.id.nav_scoreboard:
+                Intent intent5=new Intent(getApplicationContext(),Scoreboard.class);
+                startActivity(intent5);
+                break;
             case R.id.nav_settings:
                 Intent intent2 = new Intent(getApplicationContext(),Settings.class);
                 startActivity(intent2);

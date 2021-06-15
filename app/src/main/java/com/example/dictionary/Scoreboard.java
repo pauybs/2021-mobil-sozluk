@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class Scoreboard extends AppCompatActivity {
-    TextView nav_scoreboardTitle;
     ImageView imageView;
     int baslangicScore;
     boolean kontrol;
@@ -48,8 +47,6 @@ public class Scoreboard extends AppCompatActivity {
     TextView  textView3;
     TextView  textView4;
     ImageView imageView2;
-    TextView nicknameScoreboard;
-    TextView scoreScoreboard;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,13 +87,15 @@ public class Scoreboard extends AppCompatActivity {
 
                 }
 
-                Collections.sort(scoreboardGetir, new Comparator<ScoreboardGetir>(){
+
+           Collections.sort(scoreboardGetir, new Comparator<ScoreboardGetir>(){
                     public int compare(ScoreboardGetir o1, ScoreboardGetir o2)
                     {
-                        return Integer.toString(o1.getScore()).compareTo(Integer.toString(o2.getScore()));
+                        return o2.getScore()-o1.getScore();
+
                     }
                 });
-                Collections.reverse(scoreboardGetir);
+              //Collections.reverse(scoreboardGetir);
                 init(scoreboardGetir);
 
 
@@ -248,16 +247,7 @@ public class Scoreboard extends AppCompatActivity {
 
             textView2.setText(Integer.toString(gelen.get(i).getScore()));
             textView2.setGravity(Gravity.CENTER_HORIZONTAL);
-         /*   textView2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            textView2.setGravity(Gravity.RIGHT);*/
 
-
-
-
-           // textView1.setText(gelen.get(i).getNickname());
-
-
-           // textView2.setText(Integer.toString(gelen.get(i).getScore()));
 
             row1.addView(textView1);
             row1.addView(textView2);

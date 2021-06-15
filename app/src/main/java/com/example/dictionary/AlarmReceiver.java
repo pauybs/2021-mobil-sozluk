@@ -13,8 +13,6 @@ public  class AlarmReceiver extends BroadcastReceiver {
      static boolean alarmdurumu=true;
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context,"Good Morning , Time To Get Up!",Toast.LENGTH_LONG).show();
-
         Uri melodi= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         if(melodi==null){
             melodi=RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

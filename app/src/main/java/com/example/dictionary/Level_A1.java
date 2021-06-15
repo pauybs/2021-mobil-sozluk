@@ -89,64 +89,19 @@ public class Level_A1 extends AppCompatActivity  implements  NavigationView.OnNa
     SeekBar sb_speed;
     SeekBar sb_pitch;
     TextView tv_soru;
-    String id;
-    Toast toast;
-
     ProgressBar progressBar;
     int progressbarDurum=0;
-    Handler handler=new Handler();
-    DataSnapshot dsnap;
-    String geciciVeriTut;
-    TextView tv_sonuc;
-    String soru;
-    String cevap;
     Button btn_next;
-   ImageButton btn_home;
-    TimerTask task;
-
     ScoreboardGetir scoreboardGetir;
-
     int m=0;
     TextView tv_timer;
     CountDownTimer countDownTimer;
-    long timeLeftMiliSeconds;///***///
-    boolean timerRuning;
+    long timeLeftMiliSeconds;
     int sayac=0;
     BroadcastReceiver mReceiver;
     RelativeLayout relative_dur;
-
     boolean checkKontrol=false;
-    ////////////////////////////////////////////////////////
-
-
-
     int startCountdown = 10100;
-    int currentCountdown;
-    Handler countdownHandler = new Handler();
-
-    ///Timer new version varaible
-
-
-
-
-  /*  public void startCountdownTimer() {
-        currentCountdown = startCountdown;
-      //  stopTimer=false;
-        if(stopTimer==true){
-            return;
-        }
-        for (int i = 1; i <= startCountdown+1; i++) {
-            task = new TimerTask() {
-                @Override
-                public void run() {
-                        countdownHandler.post(doA);
-                }
-            };
-
-            countdownTimer = new Timer();
-            countdownTimer.schedule(task, i * 1000);
-        }
-    }*/
     public void startCountdownTimer() {
         countDownTimer=new CountDownTimer(timeLeftMiliSeconds,1000) {
             @Override
@@ -181,102 +136,9 @@ public class Level_A1 extends AppCompatActivity  implements  NavigationView.OnNa
     }
 
 
-
-
-    boolean flag=true;
-
     TextView tv_userMail;
-
     private ImageView defaultPicture;
-
     String possibleEmail;
-
-
-
-    ///////////////////////////////////////////////////////
-
-
-    /*  public void startStop(){
-        if(timerRuning){
-            stopTimer();
-        }
-        else{
-            startTimer();
-        }
-    }*/
-    /*public void resetTimer() {
-     timeLeftMiliSeconds=0;
-        updateTimer();
-        startTimer();
-
-
-    }*/
-
-    /*public void startTimer(){
-        countDownTimer = new CountDownTimer(timeLeftMiliSeconds,1000) {
-            @Override
-            public void onTick(long l) {
-                tv_timer.setVisibility(View.VISIBLE);
-                /*if(sayac%2==0 && sayac!=0){
-                    timeLeftMiliSeconds=6000;
-
-                }*/
-                //else{
-                   // timeLeftMiliSeconds=l;
-                //}
-              //  updateTimer();
-          //  }
-
-
-
-          /*  @Override
-            public void onFinish() {
-                    // TODO: restart counter
-                 //   cancel();  // there is no need the call the cancel() method here
-                    timerRuning=false;
-               //  timeLeftMiliSeconds = 0;
-
-
-        //this.start();
-
-
-        tv_timer.setText("1");
-
-
-    }
-}.start();
-
-        timerRuning=true;
-        }*/
-
-/*public void stopTimer(){
-        countDownTimer.cancel();
-        timerRuning=false;
-
-        }
-public void updateTimer(){
-
-        int secs=(int)timeLeftMiliSeconds/1000;
-
-        String gidicekzaman=""+secs;
-        tv_timer.setText(gidicekzaman);
-
-        if(Integer.parseInt(gidicekzaman)==1 && timesupkontrol==false){
-            timesupkontrol=true;
-            resetTimer();
-            Toasty.warning(getApplicationContext(), "Time's UP").show();
-            Toasty.info(getApplicationContext(), dogruCevap, Toast.LENGTH_LONG).show();
-            btn_next.setText("NEXT");
-
-        }
-
-       if(resetkontrol==true){
-            startTimer();
-
-        }
-
-
-    }*/
     String dogruCevap;
     final ArrayList gelenveri= new ArrayList();
     int baslangicScore;
@@ -292,11 +154,7 @@ public void updateTimer(){
         setContentView(R.layout.activity_level__a1);
        // startStop();
 
-
-
-
-
-        Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
+        Pattern emailPattern = Patterns.EMAIL_ADDRESS;
         Account[] accounts = AccountManager.get(this).getAccounts();
         for (Account account : accounts) {
             if (emailPattern.matcher(account.name).matches()) {
@@ -306,41 +164,27 @@ public void updateTimer(){
             }
         }
 
-
-
-
-
-
-
         progressBar=(ProgressBar) findViewById(R.id.progressBar);
 
         relative_dur=(RelativeLayout)findViewById(R.id.relative_dur);
         relative_dur.setVisibility(View.VISIBLE);
-        //Custom Toast
-
-
-
 
         sb_pitch=findViewById(R.id.sb_pitch);
         sb_speed=findViewById(R.id.sb_speed);
         imgbtn_listen=findViewById(R.id.imgbtn_listen);
 
-
         radioGroup = findViewById(R.id.rdGroup);
-////////////////////////////////////////////////////////////
+
         FirebaseAuth firebaseAuth;
 
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser account = firebaseAuth.getCurrentUser();
         if (account != null){
-            //Display User Image from Google Account
-            //Objects.requireNonNull() prevents getPhotoUrl() from returning a NullPointerException
             String personImage = Objects.requireNonNull(account.getPhotoUrl()).toString();
             ImageView userImage = findViewById(R.id.defaultPicture);
             Glide.with(this).load(personImage).into(userImage);
         }
 
-/////////////////////////////////////////////////////////////////////////////////
 
         NavigationView navigationView=findViewById(R.id.nav_view);
 
@@ -385,8 +229,6 @@ public void updateTimer(){
         btn_next = (Button) findViewById(R.id.btn_next);
 
         tv_timer =(TextView)findViewById(R.id.tv_timer);
-        
-
 
 
         textToSpeech=new TextToSpeech(this, new TextToSpeech.OnInitListener() {
@@ -417,7 +259,10 @@ public void updateTimer(){
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                 dbreference2=FirebaseDatabase.getInstance().getReference("Getir6").child(possibleEmail.replace(".","").replace("$","").replace("#","").replace("[","").replace("]",""));
+                 dbreference2=FirebaseDatabase.getInstance().getReference("Getir6").
+                         child(possibleEmail.replace(".","")
+                                 .replace("$","").replace("#","")
+                                 .replace("[","").replace("]",""));
 
                 for(DataSnapshot verigetir2 : dataSnapshot.getChildren())
                 {
@@ -461,7 +306,7 @@ public void updateTimer(){
 
                 }
 
-                timeLeftMiliSeconds=startCountdown;///***///
+                timeLeftMiliSeconds=startCountdown;
 
                 int randomNumberCevap=1+new Random().nextInt(4);//hangi şıkka koyulacak
 
@@ -469,19 +314,13 @@ public void updateTimer(){
                 int randomNumber ;
                 randomNumber = new Random().nextInt(count);//kayıt sayısı ile 1 arasında sayı üretildi
                 String []veriayir=gelenveri.get(randomNumber).toString().split("-");
-
-
                 while (m<5){
-
-
                     if(m==0){
                         tv_soru.setText(veriayir[0]);//soru olarak yazıldı
                         dogruCevap=veriayir[1];//doğru cevabı tuttuğumuz değişken
                         m++;
 
                     }
-
-
                     if(m==1){//buton boş ise
 
                         if(m==randomNumberCevap){//random cevabın indexi ile m karşılaştırılır
@@ -490,13 +329,13 @@ public void updateTimer(){
                         else{
                            int m1=new Random().nextInt(count);
                             String []array =gelenveri.get(m1).toString().split("-");
-                            while (array [1]==gelenveri.get(randomNumber).toString().split("-")[1] && !kontrolArrayList.contains(m1)){//iki defa doğru cevabı yazdrımamızı engelliyor
+                            while (array [1]==gelenveri.get(randomNumber).toString().split("-")[1] &&
+                                    !kontrolArrayList.contains(m1)){//iki defa doğru cevabı yazdrımamızı engelliyor
                                 m1=new Random().nextInt(count);
                                 array=gelenveri.get(m1).toString().split("-");
                             }
                             kontrolArrayList.add(m1);
                             rbtn_a.setText(array[1]);
-
                         }
                         m++;
                     }
@@ -573,22 +412,10 @@ public void updateTimer(){
             public void onClick(View v) {
 
                 if (btn_next.getText() == "CHECK") {
-
-                   // Getir getira1= new Getir(soru,cevap);
-                   // dbreference.child(id).setValue(getira1);
-
                     relative_dur.setVisibility(View.INVISIBLE);
                     sayac++;
                     stopTimer=true;
                     checkKontrol=true;
-
-                   /// currentCountdown=startCountdown;
-                  //  resetTimer();
-                    ///////Şıkların doğruluğu kontrol ediliyor 32896
-
-
-                    //   while (tv_timer.getText()!="1"){
-
                   if (rbtn_a.isChecked()) {
 
                         if (rbtn_a.getText() == dogruCevap) {
@@ -604,8 +431,6 @@ public void updateTimer(){
                         } else {
                           Toasty.error(getApplicationContext(), "Wrong Answer", 1000).show();
                           Toasty.info(getApplicationContext(), dogruCevap, 1000).show();
-
-
                         }
 
                       //  rbtn_a.setChecked(false);
@@ -662,7 +487,6 @@ public void updateTimer(){
 
                         }
 
-
                        // rbtn_d.setChecked(false);
                     } else {
                       /*  btn_next.setText("NEXT");
@@ -672,46 +496,20 @@ public void updateTimer(){
                     }
                     countDownTimer.cancel();
                     btn_next.setText("NEXT");
-                   /* countdownTimer.cancel();
-                    countdownTimer.purge();*/
-                    /*   rbtn_a.setChecked(false);
-                rbtn_b.setChecked(false);
-                rbtn_c.setChecked(false);
-                rbtn_d.setChecked(false);*/
-
-
             }
                 else{
 
                     kontrolArrayList.clear();
-        /*   rbtn_a.setChecked(false);
-                rbtn_b.setChecked(false);
-                rbtn_c.setChecked(false);
-                rbtn_d.setChecked(false);*/
+
 
                 radioGroup.clearCheck();
 
                     sayac++;
                     relative_dur.setVisibility(View.VISIBLE);
-            //    checkKontrol=false;
-             //   stopTimer=false;
+
                     timeLeftMiliSeconds=startCountdown;
 
 
-            //   timeLeftMiliSeconds=11000;
-                //updateTimer();
-               // startTimer();
-
-              //   countDownTimer.cancel();
-                /* startCountdownTimer();*/
-
-
-                    /* int randomNumberCevap=1+new Random().nextInt(4);//hangi şıkka koyulacak
-
-                dogruCevap=" ";
-                int randomNumber ;
-                randomNumber = new Random().nextInt(count);//kayıt sayısı ile 1 arasında sayı üretildi
-                String []veriayir=gelenveri.get(randomNumber).toString().split("-");*/
 
 
                     int randomNumberCevap=1+new Random().nextInt(4);//hangi şıkka koyulacak
@@ -886,7 +684,6 @@ public void updateTimer(){
 
 
     }
-
     private void Speak() {
         String kelimeal= tv_soru.getText().toString();
         float pitch=(float)sb_pitch.getProgress()/50;
@@ -900,10 +697,6 @@ public void updateTimer(){
         textToSpeech.setPitch(pitch);
         textToSpeech.setSpeechRate(speed);
         textToSpeech.speak(kelimeal,TextToSpeech.QUEUE_FLUSH,null);
-
-
-
-
     }
 
  /*   public void YazdirCorrect(){
@@ -1084,7 +877,10 @@ public void updateTimer(){
                 Intent intent = new Intent(getApplicationContext(),Anasayfa.class);
                 startActivity(intent);
                 break;
-
+            case R.id.nav_scoreboard:
+                Intent intent5=new Intent(getApplicationContext(),Scoreboard.class);
+                startActivity(intent5);
+                break;
             case R.id.nav_settings:
                 Intent intent2 = new Intent(getApplicationContext(),Settings.class);
                 startActivity(intent2);
@@ -1097,10 +893,6 @@ public void updateTimer(){
                 Intent intent4 = new Intent(getApplicationContext(),Share.class);
                 startActivity(intent4);
                 break;
-
-
-
-
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
