@@ -14,6 +14,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Patterns;
@@ -189,7 +190,8 @@ public class AlarmClock extends AppCompatActivity implements View.OnClickListene
                 startActivity(intent2);
                 break;
             case R.id.nav_about:
-                Intent intent3 = new Intent(getApplicationContext(),About.class);
+                Uri link=Uri.parse("https://github.com/pauybs/2021-mobil-sozluk/tree/master");
+                Intent intent3 =new Intent(Intent.ACTION_VIEW,link);
                 startActivity(intent3);
                 break;
             case R.id.nav_share:

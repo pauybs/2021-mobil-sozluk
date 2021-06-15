@@ -13,6 +13,7 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
@@ -176,7 +177,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent2);
                 break;
             case R.id.nav_about:
-                Intent intent3 = new Intent(getApplicationContext(),About.class);
+                Uri link=Uri.parse("https://github.com/pauybs/2021-mobil-sozluk/tree/master");
+                Intent intent3 =new Intent(Intent.ACTION_VIEW,link);
                 startActivity(intent3);
                 break;
             case R.id.nav_share:

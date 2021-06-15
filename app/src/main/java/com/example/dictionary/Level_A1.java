@@ -886,7 +886,8 @@ public class Level_A1 extends AppCompatActivity  implements  NavigationView.OnNa
                 startActivity(intent2);
                 break;
             case R.id.nav_about:
-                Intent intent3 = new Intent(getApplicationContext(),About.class);
+                Uri link=Uri.parse("https://github.com/pauybs/2021-mobil-sozluk/tree/master");
+                Intent intent3 =new Intent(Intent.ACTION_VIEW,link);
                 startActivity(intent3);
                 break;
             case R.id.nav_share:
